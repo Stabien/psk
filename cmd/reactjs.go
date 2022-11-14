@@ -18,14 +18,10 @@ var reactjsCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Creating ReactJS project...")
-		var command *exec.Cmd
 
-		if len(args) > 0 {
-			command = exec.Command("bash", "/mnt/d/Projets/psk-cli/scripts/reactjs.sh", args[0])
-		} else {
-			command = exec.Command("bash", "/mnt/d/Projets/psk-cli/scripts/reactjs.sh")
-		}
+		folderName, _ := cmd.Flags().GetString("name")
 
+		command := exec.Command("bash", "/mnt/d/Projets/psk-cli/scripts/reactjs.sh", folderName)
 		command.Dir = "."
 		output, err := command.Output()
 

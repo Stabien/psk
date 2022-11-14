@@ -1,20 +1,11 @@
 #!/bin/bash
 
 JWT_KEY=$(openssl rand -base64 35)
-folderName="template_nodejs"
+folderName="$1"
 
-if [ $# -eq 0 ]
-  then
-    git clone "git@github.com:Stabien/template_nodejs"
-else
-    folderName="$1"
-    git clone "git@github.com:Stabien/template_nodejs" "$folderName"
-fi
+git clone "git@github.com:Stabien/template_nodejs" "$folderName"
 
 cd "$folderName"
-
-npm update
-npm install
 
 rm -rf .git
 git init

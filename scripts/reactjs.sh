@@ -1,19 +1,10 @@
 #!/bin/bash
 
-folderName="template_reactjs"
+folderName="$1"
 
-if [ $# -eq 0 ]
-  then
-    git clone "git@github.com:Stabien/template_reactjs"
-else
-    folderName="$1"
-    git clone "git@github.com:Stabien/template_reactjs" "$folderName"
-fi
+git clone "git@github.com:Stabien/template_reactjs" "$folderName"
 
 cd "$folderName"
-
-npm update
-npm install
 
 rm -rf .git
 git init

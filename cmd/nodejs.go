@@ -1,14 +1,14 @@
 /*
 Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"log"
 	"os/exec"
+
+	"github.com/spf13/cobra"
 )
 
 // nodejsCmd represents the nodejs command
@@ -20,7 +20,7 @@ var nodejsCmd = &cobra.Command{
 		fmt.Println("Creating NodeJS project...")
 
 		folderName, _ := cmd.Flags().GetString("name")
-
+		
 		command := exec.Command("bash", "/mnt/d/Projets/psk-cli/scripts/nodejs.sh", folderName)
 		command.Dir = "."
 		output, err := command.Output()

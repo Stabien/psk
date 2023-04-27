@@ -6,30 +6,33 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"log"
 	"os/exec"
+
+	"github.com/spf13/cobra"
 )
+
+func reactCommand(cmd *cobra.Command, args []string) {
+	fmt.Println("Creating ReactJS project...")
+
+	folderName, _ := cmd.Flags().GetString("name")
+
+	command := exec.Command("bash", "/mnt/d/Projets/psk-cli/scripts/reactjs.sh", folderName)
+	command.Dir = "."
+	output, err := command.Output()
+
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Printf("%s", output)
+}
 
 // reactjsCmd represents the reactjs command
 var reactjsCmd = &cobra.Command{
 	Use:   "reactjs",
 	Short: "Creates ReactJS starter kit project",
 	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Creating ReactJS project...")
-
-		folderName, _ := cmd.Flags().GetString("name")
-
-		command := exec.Command("bash", "/mnt/d/Projets/psk-cli/scripts/reactjs.sh", folderName)
-		command.Dir = "."
-		output, err := command.Output()
-
-		if err != nil {
-			log.Println(err)
-		}
-		fmt.Printf("%s", output)
-	},
+	Run: reactCommand,
 }
 
 func init() {

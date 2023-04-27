@@ -11,25 +11,27 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func nodejsCommand(cmd *cobra.Command, args []string) {
+	fmt.Println("Creating NodeJS project...")
+
+	folderName, _ := cmd.Flags().GetString("name")
+	
+	command := exec.Command("bash", "/mnt/d/Projets/psk-cli/scripts/nodejs.sh", folderName)
+	command.Dir = "."
+	output, err := command.Output()
+
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Printf("%s", output)
+}
+
 // nodejsCmd represents the nodejs command
 var nodejsCmd = &cobra.Command{
 	Use:   "nodejs",
 	Short: "Creates NodeJS starter kit project",
 	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Creating NodeJS project...")
-
-		folderName, _ := cmd.Flags().GetString("name")
-		
-		command := exec.Command("bash", "/mnt/d/Projets/psk-cli/scripts/nodejs.sh", folderName)
-		command.Dir = "."
-		output, err := command.Output()
-
-		if err != nil {
-			log.Println(err)
-		}
-		fmt.Printf("%s", output)
-	},
+	Run: nodejsCommand,
 }
 
 func init() {

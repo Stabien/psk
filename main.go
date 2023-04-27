@@ -4,7 +4,7 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import "psk-cli/cmd"
+import "psk/cmd"
 
 func main() {
 	cmd.Execute()

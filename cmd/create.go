@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
+	"psk/data"
 	"psk/utils"
 	"strings"
 
@@ -15,15 +16,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var stacks = map[string]string{
-	"React.js": "reactjs",
-	"Node.js": "nodejs",
+func getStackLabels() []string {
+	var stackLabels []string
+
+	for key := range data.Stacks {
+		stackLabels = append(stackLabels, key)
+	}
+	return stackLabels
 }
 
-func chooseStack() (string, error) {
+func selectPrompt(label string, items []string) (string, error) {
 	prompt := promptui.Select{
-		Label: "Select your stack",
-		Items: []string{"React.js", "Node.js"},
+		Label: label,
+		Items: items,
 	}
 
 	_, result, err := prompt.Run()
@@ -32,12 +37,16 @@ func chooseStack() (string, error) {
 }
 
 func getStack(args []string) (string, error) {
+	stackLabels := getStackLabels()
+
 	if (len(args) == 0) {
-		return chooseStack()
+		stackLabel, err := selectPrompt("Select your stack", stackLabels)
+		return data.Stacks[stackLabel], err
 	} else {
 		userInput := strings.ToLower(args[0])
-		if (!utils.IsInMap(stacks, userInput)) {
-			return chooseStack()
+		if (!utils.IsInMap(data.Stacks, userInput)) {
+			stackLabel, err := selectPrompt("Select your stack", stackLabels)
+			return data.Stacks[stackLabel], err
 		} else {
 			return userInput, nil
 		}
@@ -45,9 +54,9 @@ func getStack(args []string) (string, error) {
 }
 
 func getScriptPath(stackName string) string {
-	for key := range stacks {
+	for key := range data.Stacks {
 		if key == stackName {
-			stackName = stacks[key]
+			stackName = data.Stacks[key]
 		}
 	}
 	return "/mnt/d/Projets/psk-cli/scripts/" + stackName + ".sh"
@@ -69,8 +78,21 @@ func getProjectName() (string, error) {
 	return prompt.Run()
 }
 
-func callScript(stackName string, projectName string) {
-	
+func getOptions(stackName string) ([]string, error) {
+	var options []string
+
+	for key, option := range data.StackOptions[stackName] {
+		option, err := selectPrompt("Select a " + key, option)
+		
+		if err != nil {
+			return nil, err
+		}
+		options = append(options, option)
+	}
+	return options, nil
+}
+
+func callScript(stackName string, projectName string, options []string) {
 	path := getScriptPath(stackName)
 	command := exec.Command("bash", path, projectName)
 	command.Dir = "."
@@ -84,6 +106,7 @@ func callScript(stackName string, projectName string) {
 
 func createCommand(cmd *cobra.Command, args []string) {
 	stack, err := getStack(args)
+	fmt.Println(stack)
 
 	if err != nil {
 		log.Fatal(err)
@@ -95,7 +118,13 @@ func createCommand(cmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 
-	callScript(stack, projectName)
+	options, err := getOptions(stack)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	callScript(stack, projectName, options)
 }
 
 var createCmd = &cobra.Command{

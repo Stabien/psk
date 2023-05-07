@@ -92,9 +92,11 @@ func getOptions(stackName string) ([]string, error) {
 	return options, nil
 }
 
-func callScript(stackName string, projectName string, options []string) {
+func callScript(stackName string, projectName string, optionList []string) {
 	path := getScriptPath(stackName)
-	command := exec.Command("bash", path, projectName)
+	options := strings.Join(optionList, " ")
+
+	command := exec.Command("bash", path, projectName, options)
 	command.Dir = "."
 	output, err := command.Output()
 
@@ -106,8 +108,7 @@ func callScript(stackName string, projectName string, options []string) {
 
 func createCommand(cmd *cobra.Command, args []string) {
 	stack, err := getStack(args)
-	fmt.Println(stack)
-
+	
 	if err != nil {
 		log.Fatal(err)
 	}

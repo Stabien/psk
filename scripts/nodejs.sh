@@ -2,8 +2,15 @@
 
 JWT_KEY=$(openssl rand -base64 35)
 folderName="$1"
+language="$2"
+path="git@github.com:Stabien/template_nodejs"
 
-git clone "git@github.com:Stabien/template_nodejs" "$folderName"
+if [ $language = "JavaScript" ] 
+then
+  path="git@github.com:Stabien/template_nodejs_js"
+fi
+
+git clone "$path" "$folderName"
 
 cd "$folderName"
 
